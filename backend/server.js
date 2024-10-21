@@ -8,10 +8,26 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const fileUploadRoutes=require('./routes/files');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
+app.use(cookieParser());
+
+// Session setup
+app.use(session({
+    secret: 'your_session_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        sameSite: 'Strict', // Prevents CSRF
+    },
+}));
 
 // Connect to MongoDB
 connectDB();

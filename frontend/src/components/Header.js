@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const Header = () => {
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem('token');
+  const isLoggedIn = sessionStorage.getItem('token');
 
   const handleLogout = async () => {
     try {
@@ -12,8 +12,8 @@ const Header = () => {
     } catch (error) {
       console.error('Logout error', error);
     } finally {
-      // Remove token from localStorage and navigate to login page
-      localStorage.removeItem('token');
+      // Remove token from sessionStorage and navigate to login page
+      sessionStorage.removeItem('token');
       navigate('/login');
     }
   };

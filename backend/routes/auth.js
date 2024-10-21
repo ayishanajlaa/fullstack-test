@@ -36,7 +36,6 @@ router.post('/login', async (req, res) => {
             expiresIn: '30d', // Token expiry duration
         });
 
-        // Store session information (you can store more user details if needed)
         req.session.userId = user._id;
 
         res.json({ token, userId: user._id, email: user.email });

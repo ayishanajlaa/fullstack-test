@@ -25,7 +25,7 @@ const Login = () => {
             }, { withCredentials: true });
 
             // Store token securely
-            localStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('token', response.data.token);
             navigate('/');
         } catch (error) {
             toast.error('Invalid email or password');

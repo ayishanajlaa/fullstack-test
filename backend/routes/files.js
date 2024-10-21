@@ -2,9 +2,9 @@ const express = require('express');
 const multer = require('multer');
 const File = require('../models/File');
 const { verifyToken } = require('../middleware/auth');
-const crypto = require('crypto'); // For generating unique links'
+const crypto = require('crypto'); 
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid'); // Import UUID for random name generation
+const { v4: uuidv4 } = require('uuid'); 
 
 
 const router = express.Router();
@@ -57,12 +57,11 @@ router.post('/file/:id/create-link', verifyToken, async (req, res) => {
           return res.status(404).json({ error: 'File not found or unauthorized' });
       }
 
-      // Generate a random shareable link name
       const customName = uuidv4(); // Generates a random UUID
 
       // Add the new shareable link to the array
       file.sharedLinks.push(customName); 
-      await file.save(); // Save the updated file document
+      await file.save(); 
 
       res.json({ message: 'Shareable link created', shareableLink: customName });
   } catch (error) {
@@ -73,17 +72,15 @@ router.post('/file/:id/create-link', verifyToken, async (req, res) => {
 
 router.get('/files-view/:customName', async (req, res) => {
   try {
-      // Find the file where sharedLinks includes the customName
       const file = await File.findOne({ sharedLinks: req.params.customName });
 
       if (!file) {
           return res.status(404).json({ error: 'File not found' });
       }
 
-      // Increment view count
       file.views += 1; // Increment the views field
       await file.save();
-      const filePath = path.join(__dirname, '../', file.url); // Adjust this line
+      const filePath = path.join(__dirname, '../', file.url); 
       // Return file in base64 format
       const fileData = fs.readFileSync(filePath); // Use the correct path according to your setup
       const base64Data = Buffer.from(fileData).toString('base64');
@@ -95,23 +92,29 @@ router.get('/files-view/:customName', async (req, res) => {
 });
 
 
+router.patch('/add-tags/:id', verifyToken, async (req, res) => {
+  try {
+      const { tags } = req.body; 
+      const file = await File.findById(req.params.id);
+      
+      if (!file || file.user.toString() !== req.user.id) {
+          return res.status(404).json({ error: 'File not found or unauthorized' });
+      }
+      
+      if (tags && Array.isArray(tags)) {
+          
+          const newTags = tags.map(tag => tag.trim()).filter(tag => tag !== '');
+          file.tags = [...new Set([...file.tags, ...newTags])]; 
+      }
 
-router.post('/file/:id/add-tags', verifyToken, async (req, res) => {
-    try {
-        const { tags } = req.body;
-        const file = await File.findById(req.params.id);
-        if (!file || file.user.toString() !== req.user.id) {
-            return res.status(404).json({ error: 'File not found or unauthorized' });
-        }
-
-        file.tags = [...new Set([...file.tags, ...tags.split(',')])]; // Merge and remove duplicates
-        await file.save();
-        res.json({ message: 'Tags updated', file });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to update tags' });
-    }
+      await file.save();
+      res.json({ message: 'Tags updated', file });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to update tags' });
+  }
 });
+
 
 
 router.get('/get-files', verifyToken, async (req, res) => {
@@ -120,7 +123,7 @@ router.get('/get-files', verifyToken, async (req, res) => {
 
         // Get base64 data for each file
         const formattedFiles = await Promise.all(files.map(async file => {
-            const filePath = path.join(__dirname, '..', 'uploads', file.filename); // Adjust path as necessary
+            const filePath = path.join(__dirname, '..', 'uploads', file.filename); 
             const fileData = fs.readFileSync(filePath);
             const base64File = fileData.toString('base64');
             
@@ -132,7 +135,7 @@ router.get('/get-files', verifyToken, async (req, res) => {
                 tags: file.tags,
                 views: file.views,
                 sharedLinks: file.sharedLinks,
-                uploadedAt: file.createdAt.toISOString() // Assuming createdAt is a Date object
+                uploadedAt: file.createdAt.toISOString() 
             };
         }));
 
