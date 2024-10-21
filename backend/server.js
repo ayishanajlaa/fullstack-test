@@ -34,12 +34,11 @@ connectDB();
 
 // Middleware
 // CORS Configuration
-const corsOptions = {
-    origin:  'http://209.38.193.135:3000',
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-};
+app.use(cors({
+    origin: 'http://localhost:3000', // Change this to your frontend URL
+  }));
 
-app.use(cors(corsOptions));app.use(express.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
