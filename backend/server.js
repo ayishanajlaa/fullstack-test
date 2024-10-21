@@ -35,7 +35,7 @@ connectDB();
 // Middleware
 // CORS Configuration
 const corsOptions = {
-    origin: 'http://localhost:3000', // Replace with your frontend URL
+    origin:  'http://209.38.193.135:3000',
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
