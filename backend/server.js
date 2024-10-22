@@ -35,11 +35,23 @@ connectDB();
 // Middleware
 // CORS Configuration
 
+// CORS configuration
+const allowedOrigins = ['http://localhost:3000', 'http://209.38.193.135:3000'];
+
 app.use(cors({
-  origin: 'http://localhost:3000', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Methods your API supports
-  credentials: true, // Include this if you're sending cookies or authentication headers
-}));
+    origin: function (origin, callback) {
+      console.log('Origin:', origin); // Log the incoming origin
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        console.log('CORS allowed for origin:', origin);
+        callback(null, true); // Allow requests with no origin (like mobile apps or curl requests)
+      } else {
+        console.log('CORS not allowed for origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true, // Only if you're sending cookies or authentication
+  }));
 
 
 app.use(express.json());
