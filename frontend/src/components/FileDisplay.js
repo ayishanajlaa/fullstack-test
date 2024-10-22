@@ -12,7 +12,7 @@ const FileDisplay = () => {
   useEffect(() => {
     const fetchFileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/api/files/files-view/${fileId}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/files/files-view/${fileId}`);
         setFileData(response.data);
       } catch (error) {
         console.error('Error fetching file data:', error);

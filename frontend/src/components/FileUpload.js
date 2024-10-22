@@ -259,8 +259,24 @@ const FileUpload = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(copyLink);
-  };
+    if (!copyLink) {
+        toast.error("No link to copy.");
+        return;
+    }
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(copyLink)
+            .then(() => {
+                toast.success("Link copied to clipboard!");
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+                toast.error("Failed to copy link. Please try again.");
+            });
+    } else {
+        toast.error("Clipboard API not supported in this browser.");
+    }
+};
 
   const moveFile = (fromIndex, toIndex) => {
     const updatedFiles = [...filesList];
@@ -338,34 +354,34 @@ const FileUpload = () => {
 
         {/* Shareable Link Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-lg">
-              <h3 className="text-lg font-semibold mb-4 text-center">
-                Shareable Link
-              </h3>
-              <input
-                type="text"
-                value={copyLink}
-                readOnly
-                className="border border-gray-300 rounded-md p-2 w-full mb-4"
-              />
-              <div className="flex flex-col md:flex-row justify-between">
-                <button
-                  onClick={copyToClipboard}
-                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto mr-0 md:mr-2 hover:bg-blue-600 transition"
-                >
-                  <FaCopy className="inline mr-1" /> Copy Link
-                </button>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="mt-4 border border-red-500 text-red-500 px-4 py-2 rounded w-full md:w-auto hover:bg-red-500 hover:text-white transition"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-lg">
+                            <h3 className="text-lg font-semibold mb-4 text-center">
+                                Shareable Link
+                            </h3>
+                            <input
+                                type="text"
+                                value={copyLink}
+                                readOnly
+                                className="border border-gray-300 rounded-md p-2 w-full mb-4"
+                            />
+                            <div className="flex flex-col md:flex-row justify-between">
+                                <button
+                                    onClick={copyToClipboard}
+                                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto mr-0 md:mr-2 hover:bg-blue-600 transition"
+                                >
+                                    <FaCopy className="inline mr-1" /> Copy Link
+                                </button>
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="mt-4 border border-red-500 text-red-500 px-4 py-2 rounded w-full md:w-auto hover:bg-red-500 hover:text-white transition"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
       </div>
     </DndProvider>
   );
