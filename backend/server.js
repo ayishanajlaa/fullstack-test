@@ -34,9 +34,13 @@ connectDB();
 
 // Middleware
 // CORS Configuration
+
 app.use(cors({
-    origin: 'http://localhost:3000', // Change this to your frontend URL
-  }));
+  origin: 'http://localhost:3000', // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Methods your API supports
+  credentials: true, // Include this if you're sending cookies or authentication headers
+}));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
